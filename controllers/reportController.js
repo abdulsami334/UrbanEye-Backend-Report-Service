@@ -3,7 +3,7 @@ const Report = require("../models/reportModel");
 exports.createReport = async (req, res) => {
   try {
       
-    const { utilitytype, description, latitude,longitude } = req.body;
+    const { utilitytype, description, latitude,longitude,address } = req.body;
     const imageUrl = req.file ? req.file.filename : null;
 
     const newReport = new Report({
@@ -11,6 +11,7 @@ exports.createReport = async (req, res) => {
       description,
       latitude,
       longitude,
+      address,
       imageUrl,
       createdBy: req.user.uid, // 👈 from JWT
     });
@@ -27,6 +28,7 @@ exports.createReport = async (req, res) => {
 // ✅ Get user's own reports
 exports.getMyReports = async (req, res) => {
   try {
+      const userId = req.user.uid;
     const reports = await Report.find({ createdBy: req.user.uid }).sort({ createdAt: -1 });
     res.status(200).json({ reports });
   } catch (err) {
